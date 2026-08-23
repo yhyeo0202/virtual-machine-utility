@@ -45,13 +45,30 @@ def startSession():
         ]
         runSubprocess(listCommand)
 
+    with tarfile.open('virtualMachineSetup.tar.gz', 'w:gz') as f:
+        f.add('virtualMachineSetup')
+
     listCommand = [
         venvCommand,
-        'colab upload -s workspace setupVirtualMachine.sh /content/setupVirtualMachine.sh',
-        getExecColabCommand('!chmod +x setupVirtualMachine.sh'),
-        getExecColabCommand('!./setupVirtualMachine.sh')
+        'colab upload -s workspace virtualMachineSetup.tar.gz /content/virtualMachineSetup.tar.gz',
+        getExecColabCommand('!tar -xzf /content/virtualMachineSetup.tar.gz'),
+        getExecColabCommand('rm /content/virtualMachineSetup.tar.gz'),
+        getExecColabCommand('!chmod +x /content/virtualMachineSetup/setup.sh'),
+        getExecColabCommand('!/content/virtualMachineSetup/setup.sh')
     ]
-    runSubprocess(listCommand)
+    completedProcess = runSubprocess(listCommand)
+    os.remove('virtualMachineSetup.tar.gz')
+
+    if completedProcess.returncode != 0:
+
+        return
+
+    listCommand = [
+        venvCommand,
+        'colab drivemount -s workspace',
+        getExecColabCommand(f"!git clone {dictConfig['repository'].format(os.environ['GITHUB_TOKEN'])}")
+    ]
+    subprocess.Popen(['alacritty', '-e', 'bash', '-c', ' && '.join(listCommand)])
 
     return
 
@@ -104,6 +121,22 @@ def download():
             f.extractall()
 
         os.remove(path)
+
+    return
+
+# Have to use !
+def exec():
+    if len(sys.argv) < 2:
+        print('Please specify command to be executed')
+
+        return
+
+    listCommand = [
+        venvCommand,
+        getExecColabCommand(sys.argv[1])
+    ]
+    
+    subprocess.Popen(['alacritty', '-e', 'bash', '-c', ' && '.join(listCommand)])
 
     return
 

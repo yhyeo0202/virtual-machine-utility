@@ -43,3 +43,13 @@ noremap <silent> <Up> g<Up>
 noremap <silent> <Down> g<Down>
 EOF
 fi
+
+cp /content/virtualMachineSetup/.vimrc ~/
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+vim +PlugInstall +qall
+pip install zuban
+
+apt install -y screen
+git config --global user.name "yhyeo0202"
+git config --global user.email "yhyeo0202@gmail.com"
+git config --global credential.helper store

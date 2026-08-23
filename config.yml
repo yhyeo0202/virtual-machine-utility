@@ -4,3 +4,4 @@ path:
 # colab
 platform: 'colab'
 bGpu: false
+repository: 'https://yhyeo0202:{}@github.com/AlexanderTanWT/OilPalmDetectionAI'
