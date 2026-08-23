@@ -1,0 +1,6 @@
+path:
+  main: '/home/yhyeo0202/virtual-machine-utility'
+
+# colab
+platform: 'colab'
+bGpu: false
