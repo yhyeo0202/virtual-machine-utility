@@ -85,11 +85,15 @@ def download():
     ]
     completeProcess = runSubprocess(listCommand)
 
+    os.makedirs('tmp', exist_ok = True)
+    localPath = os.path.join('tmp', sys.argv[1].split('/')[-1])
+
     if completeProcess.stdout[0] == 'd':
-        path = f'{sys.argv[1]}.tar.gz'
+        path = f"{sys.argv[1].split('/')[-1]}.tar.gz"
+        localPath = f'{localPath}.tar.gz'
         listCommand = [
             venvCommand,
-            getExecColabCommand(f'!tar -czf {path} {sys.argv[1]}'),
+            getExecColabCommand(f'!tar -czf {path} -C {'/'.join(sys.argv[1].split('/')[:-1])} {path.rstrip('.tar.gz')}'),
         ]
         completeProcess = runSubprocess(listCommand)
 
@@ -102,7 +106,7 @@ def download():
 
     listCommand = [
         venvCommand,
-        f'colab download -s workspace /content/{path} {path.split('/')[-1]}',
+        f'colab download -s workspace /content/{path} {localPath}',
     ]
     completeProcess = runSubprocess(listCommand)
 
@@ -117,10 +121,10 @@ def download():
         ]
         runSubprocess(listCommand)
 
-        with tarfile.open(path, 'r:gz') as f:
-            f.extractall()
+        with tarfile.open(localPath, 'r:gz') as f:
+            f.extractall(path = 'tmp')
 
-        os.remove(path)
+        os.remove(localPath)
 
     return
 
