@@ -93,7 +93,7 @@ def download():
         localPath = f'{localPath}.tar.gz'
         listCommand = [
             venvCommand,
-            getExecColabCommand(f'!tar -czf {path} -C {'/'.join(sys.argv[1].split('/')[:-1])} {path.rstrip('.tar.gz')}'),
+            getExecColabCommand(f'!tar -czf {path} -C {'/'.join(sys.argv[1].split('/')[:-1])} {path.removesuffix('.tar.gz')}'),
         ]
         completeProcess = runSubprocess(listCommand)
 
